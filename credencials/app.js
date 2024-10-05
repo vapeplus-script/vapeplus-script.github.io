@@ -1,89 +1,87 @@
-// app.js
-const cooldownTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-const claimBtn = document.getElementById("claim-account");
-const usernameField = document.getElementById("username");
-const passwordField = document.getElementById("password");
-const cooldownMessage = document.getElementById("cooldown-message");
-const cooldownTimer = document.getElementById("cooldown-timer");
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const app = express();
 
-let lastClaimTime = localStorage.getItem('lastClaimTime');
+app.use(express.json());
 
-// Function to check if user is under cooldown
-function isCooldownActive() {
-  const now = new Date().getTime();
-  return lastClaimTime && now - lastClaimTime < cooldownTime;
+const cooldownTime = 2 * 60 * 60 * 1000; // 2 hours cooldown
+let usersClaimed = {};
+
+// Load accounts from JSON file
+function loadAccounts() {
+  const accountsPath = path.resolve(__dirname, 'accounts.json');
+  const data = fs.readFileSync(accountsPath, 'utf-8');
+  return JSON.parse(data);
 }
 
-// Update UI for cooldown timer
-function startCooldownCountdown() {
+// Save updated accounts to the JSON file
+function saveAccounts(accounts) {
+  const accountsPath = path.resolve(__dirname, 'accounts.json');
+  fs.writeFileSync(accountsPath, JSON.stringify(accounts, null, 2));
+}
+
+// Handle account claiming
+app.post('/claim-account', (req, res) => {
+  const userIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const now = new Date().getTime();
-  const timeLeft = cooldownTime - (now - lastClaimTime);
 
-  let minutes = Math.floor(timeLeft / (1000 * 60));
-  let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-  cooldownTimer.textContent = `${minutes}m ${seconds}s`;
-
-  if (timeLeft <= 0) {
-    cooldownMessage.classList.add('hidden');
-    claimBtn.disabled = false;
-  } else {
-    setTimeout(startCooldownCountdown, 1000);
+  if (usersClaimed[userIP] && now - usersClaimed[userIP].lastClaimTime < cooldownTime) {
+    const timeLeft = cooldownTime - (now - usersClaimed[userIP].lastClaimTime);
+    return res.status(403).json({
+      success: false,
+      message: `You need to wait before claiming again. Time left: ${Math.ceil(timeLeft / 1000 / 60)} minutes`
+    });
   }
-}
 
-// Function to claim account
-async function claimAccount() {
-  // Disable button
-  claimBtn.disabled = true;
+  // Load the current accounts from the file
+  let accounts = loadAccounts();
+  let account;
 
-  try {
-    const response = await fetch('/claim-account', { method: 'POST' });
-    const data = await response.json();
-
-    if (data.success) {
-      // Update UI with account credentials
-      usernameField.textContent = `Username: ${data.username}`;
-      passwordField.textContent = `Password: ${data.password}`;
-
-      // Notify Discord webhook
-      await fetch(data.webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: `Account ${data.username} was claimed!`
-        })
-      });
-
-      // Set cooldown
-      lastClaimTime = new Date().getTime();
-      localStorage.setItem('lastClaimTime', lastClaimTime);
-      cooldownMessage.classList.remove('hidden');
-      startCooldownCountdown();
+  if (!usersClaimed[userIP]) {
+    // If it's the first time the user is claiming, give them a "better" account
+    if (accounts.betterAccounts.length > 0) {
+      account = accounts.betterAccounts.shift();
+      usersClaimed[userIP] = { claimedType: 'better', lastClaimTime: now };
     } else {
-      alert('No accounts available, try again later!');
-      claimBtn.disabled = false;
+      return res.status(404).json({ success: false, message: 'No better accounts available' });
     }
-  } catch (error) {
-    console.error('Error claiming account:', error);
-    alert('An error occurred. Please try again.');
-    claimBtn.disabled = false;
-  }
-}
-
-// Event listener for claiming account
-claimBtn.addEventListener('click', () => {
-  if (isCooldownActive()) {
-    alert('You need to wait for the cooldown period!');
   } else {
-    claimAccount();
+    // If they've already claimed, give them a "normal" account
+    if (accounts.normalAccounts.length > 0) {
+      account = accounts.normalAccounts.shift();
+      usersClaimed[userIP].lastClaimTime = now;
+    } else {
+      return res.status(404).json({ success: false, message: 'No normal accounts available' });
+    }
   }
+
+  // Save the updated accounts back to the JSON file
+  saveAccounts(accounts);
+
+  // Send a webhook notification to Discord
+  const webhookUrl = "https://discord.com/api/webhooks/1291773387080728737/9BS1-bLPbT5GGwB89Z7lr2qBxSOtmbxApxToKGqGKISs1HSjXZ3zXT4nieSbzBDovPZn";
+  const webhookPayload = {
+    content: `Account ${account.username} was claimed!`
+  };
+
+  fetch(webhookUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(webhookPayload)
+  })
+  .then(() => console.log(`Sent webhook for account: ${account.username}`))
+  .catch(err => console.error('Error sending webhook:', err));
+
+  // Send the claimed account to the client
+  res.json({
+    success: true,
+    username: account.username,
+    password: account.password
+  });
 });
 
-// Check if cooldown is active on page load
-if (isCooldownActive()) {
-  cooldownMessage.classList.remove('hidden');
-  startCooldownCountdown();
-} else {
-  claimBtn.disabled = false;
-}
+// Start the server
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});

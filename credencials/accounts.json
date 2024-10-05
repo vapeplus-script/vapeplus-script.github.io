@@ -1,0 +1,10 @@
+{
+  "betterAccounts": [
+    { "username": "betterUser1", "password": "betterPass1" },
+    { "username": "betterUser2", "password": "betterPass2" }
+  ],
+  "normalAccounts": [
+    { "username": "normalUser1", "password": "normalPass1" },
+    { "username": "normalUser2", "password": "normalPass2" }
+  ]
+}

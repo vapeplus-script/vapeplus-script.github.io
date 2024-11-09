@@ -3,14 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=https://bumt1.github.io/">
-    <title>Redirecting...</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Vape+</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            color: #ffffff;
+            overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark & Light mode styling */
+        body.light-mode {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            color: #333333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 50px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            animation: fadeIn 0.8s ease-in-out;
+            transition: all 0.3s ease;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mode switch */
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .light-mode .mode-toggle {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+
+        /* Buttons */
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            color: inherit;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Redirecting...</h1>
-        <p>If you are not redirected automatically, follow this <a href="https://bumt1.github.io/">link to the Vape+ website</a>.</p>
+        <h1 style="font-size: 2.5em; font-weight: 600; letter-spacing: 2px; color: inherit;">Vape+</h1>
+        <button class="btn" onclick="window.location.href='https://vapeplus.best/'">Vape+ Website</button>
+        <button class="btn" onclick="window.location.href='https://discord.gg/FNMMkNaPCt'">Vape+ Discord</button>
     </div>
+    <button class="mode-toggle" onclick="toggleMode()">Light Mode</button>
+
+    <script>
+        const modeToggle = document.querySelector('.mode-toggle');
+        const body = document.body;
+
+        function toggleMode() {
+            body.classList.toggle('light-mode');
+            modeToggle.textContent = body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
+        }
+
+        // Set default to dark mode
+        document.addEventListener("DOMContentLoaded", () => {
+            body.classList.remove('light-mode'); // Ensures default dark mode
+            modeToggle.textContent = "Light Mode";
+        });
+    </script>
 </body>
 </html>

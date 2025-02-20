@@ -1,12 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0;url=https://docs.google.com/presentation/d/1OGE-PiTeM4vK7Ac80BWG8iSTfPpeIYIdZR6h_CMLVqo/edit?usp=drivesdk">
+    <title>Video Player</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+        }
+        video {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
 </head>
 <body>
-    <p>If you are not redirected, <a href="https://docs.google.com/presentation/d/1OGE-PiTeM4vK7Ac80BWG8iSTfPpeIYIdZR6h_CMLVqo/edit?usp=drivesdk">click here</a>.</p>
+    <video controls>
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 </body>
 </html>

@@ -2,26 +2,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player</title>
+    <title>Script Display</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #000;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
         }
-        video {
-            max-width: 90%;
-            max-height: 90%;
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
         }
     </style>
 </head>
 <body>
-    <video controls>
-        <source src="video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <h2>Script Links</h2>
+    <pre>
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bumt1/VapePlusRoblox/main/NewMainScript.lua", true))()loadstring(game:HttpGet("https://raw.githubusercontent.com/bumt1/VapePlusRoblox/refs/heads/main/installer.lua", true))() </pre>
+
 </body>
 </html>

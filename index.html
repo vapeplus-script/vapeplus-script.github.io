@@ -19,8 +19,62 @@
 </head>
 <body>
     <h2>Script Links</h2>
-    <pre>
-loadstring(game:HttpGet("https://raw.githubusercontent.com/bumt1/VapePlusRoblox/main/NewMainScript.lua", true))()loadstring(game:HttpGet("https://raw.githubusercontent.com/bumt1/VapePlusRoblox/refs/heads/main/installer.lua", true))() </pre>
+    local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+local TargetPlayer = Players:FindFirstChild("ilovejustinasass851")
+
+local function preventFalling()
+    while true do
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0) -- Disables gravity
+        end
+        task.wait(0.01) -- Runs frequently to ensure gravity is always disabled
+    end
+end
+
+local function teleportLoop()
+    RunService.RenderStepped:Connect(function()
+        if TargetPlayer and TargetPlayer.Character and TargetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPlayer.Character.HumanoidRootPart.CFrame
+            end
+        end
+    end)
+end
+
+local function monitorTargetDeath()
+    if TargetPlayer then
+        TargetPlayer.CharacterAdded:Connect(function(character)
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.Died:Connect(function()
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+                        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):TakeDamage(1000) -- Kills local player
+                    end
+                end)
+            end
+        end)
+    end
+end
+
+local function onLocalRespawn()
+    LocalPlayer.CharacterAdded:Connect(function()
+        task.wait(1) -- Wait for character to load
+        teleportLoop()
+        preventFalling()
+    end)
+end
+
+-- Initialize functions
+if TargetPlayer then
+    monitorTargetDeath()
+end
+onLocalRespawn()
+teleportLoop()
+preventFalling()<pre>
+</pre>
 
 </body>
 </html>

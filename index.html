@@ -1,57 +1,12 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Script</title>
-    <style>
-        body {
-            font-family: monospace;
-            white-space: pre;
-        }
-    </style>
+    <meta http-equiv="refresh" content="0;url=https://docs.google.com/presentation/d/1OGE-PiTeM4vK7Ac80BWG8iSTfPpeIYIdZR6h_CMLVqo/edit?usp=drivesdk">
+    <title>Redirecting...</title>
 </head>
 <body>
-<pre>
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")local LocalPlayer = Players.LocalPlayer local TargetPlayer = Players:FindFirstChild("vapplusbestscript")
-
-local MAX_FORWARD_SPEED = 23 -- Maximum forward speed local MAX_UPWARD_SPEED = 500 -- Maximum upward movement speed
-
-local function moveSmoothly() RunService.RenderStepped:Connect(function() if TargetPlayer and TargetPlayer.Character and TargetPlayer.Character:FindFirstChild("HumanoidRootPart") then if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then local localHRP = LocalPlayer.Character.HumanoidRootPart local targetHRP = TargetPlayer.Character.HumanoidRootPart
-
-local targetPosition = targetHRP.Position
-            local localPosition = localHRP.Position
-
-            -- Calculate movement direction and distances
-            local direction = (targetPosition - localPosition).unit
-            local horizontalDistance = Vector3.new(targetPosition.X, localPosition.Y, targetPosition.Z) - Vector3.new(localPosition.X, localPosition.Y, localPosition.Z)
-            local verticalDistance = targetPosition.Y - localPosition.Y
-            
-            -- Limit forward speed
-            if horizontalDistance.Magnitude > MAX_FORWARD_SPEED then
-                targetPosition = localPosition + direction * MAX_FORWARD_SPEED
-            end
-
-            -- Limit upward speed
-            if math.abs(verticalDistance) > MAX_UPWARD_SPEED then
-                targetPosition = Vector3.new(targetPosition.X, localPosition.Y + math.sign(verticalDistance) * MAX_UPWARD_SPEED, targetPosition.Z)
-            end
-
-            -- Smooth movement with TweenService
-            local tween = TweenService:Create(localHRP, TweenInfo.new(0.1, Enum.EasingStyle.Linear), {CFrame = CFrame.new(targetPosition)})
-            tween:Play()
-        end
-    end
-end)
-
-end
-
-local function monitorTargetDeath() if TargetPlayer then TargetPlayer.CharacterAdded:Connect(function(character) local humanoid = character:FindFirstChildOfClass("Humanoid") if humanoid then humanoid.Died:Connect(function() if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):TakeDamage(1000) -- Kills local player end end) end end) end end
-
-local function onLocalRespawn() LocalPlayer.CharacterAdded:Connect(function() task.wait(1) -- Wait for character to load moveSmoothly() end) end
-
--- Initialize functions if TargetPlayer then monitorTargetDeath() end onLocalRespawn() moveSmoothly() </pre>
-
+    <p>If you are not redirected, <a href="https://docs.google.com/presentation/d/1OGE-PiTeM4vK7Ac80BWG8iSTfPpeIYIdZR6h_CMLVqo/edit?usp=drivesdk">click here</a>.</p>
 </body>
 </html>
